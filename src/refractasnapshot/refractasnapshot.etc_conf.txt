@@ -1,0 +1,317 @@
+# This file contains some configuration variables for Refracta Snapshot
+# (version 10.2.x GUI and CLI versions). If you want to change
+# the defaults, this is the place to do it.
+#
+# Put this file in /etc or edit the configfile variable found at the
+# top of refractasnapshot to reflect its true location. If the
+# script can't find this config file, it'll use the default values.
+# Copyright 2011-2018 fsmithred@gmail.com
+
+
+
+# Some laptops overheat when running rsync or mksquashfs. If limit_cpu
+# is "yes", cpu activity will be limited on those two commands.
+# limit is percentage of cpu allowed for command, up to 100% per core.
+
+limit_cpu="no"
+limit="50"
+
+
+# Default location for error log is /var/log/refractasnashot.log
+
+error_log="/var/log/refractasnapshot.log"
+
+
+# You can change the location of $work_dir (location of system copy) and
+# $snapshot_dir (location of final iso file) in case you don't have enough
+# space on the system. (Defaults are "/home/work" and "/home/snapshot")
+#
+# Hints:
+#   Be sure to use separate directories for these two variables. If you
+# use the same location for both (e.g. /media/disk) and if $save_work
+# is set to "no", your CD image will get deleted when the program
+# finishes. Instead, use something like /media/disk/snapshot and
+# /media/disk/work, or even /media/disk/snapshot/work.
+#   These directories will be created by the script, and they are
+# already set to be excluded from the rsync copy of the system (so you
+# don't end up with an extra copy of your system or old snapshots in the
+# final CD image.)
+#   Any filesystems mounted in /mnt or /media will be excluded from the
+# system copy. Filesystems mounted elsewhere will be included and will
+# increase the size of the final CD image. To avoid that, you can either
+# unmount those filesystems before running refractasnapshot, or you can
+# add them to the excludes file. (See snapshot_excludes below.)
+
+snapshot_dir="/home/snapshot"
+work_dir="/home/work"
+efi_work="${work_dir}/efi-files"
+
+
+# Set to yes to create boot files for uefi.
+
+make_efi="yes"
+
+
+# Set to force xorriso to use $uefi_opt (for testing only)
+
+force_efi="no"
+
+
+# Change $save_work to "yes" if you want the temporary copy of your
+# filesystem to be saved. This will make subsequent snapshot creation
+# go faster.
+# (Default is "no")
+
+save_work="no"
+
+
+# rsync delete options (or any others you want to add)
+# This is only for copy_filesystem() and only if $save_work is "yes"
+# Use only one option per variable!
+# Default options are --delete-before and --delete-excluded
+# Full command in the script is:
+# rsync -av / myfs/ ${rsync_option1} ${rsync_option12} ${rsync_option3} \
+#	--exclude="$work_dir" --exclude="$snapshot_dir" --exclude="$efi_work" --exclude-from="$snapshot_excludes"
+
+rsync_option1="--delete-before"
+rsync_option2=" --delete-excluded"
+rsync_option3=""
+
+# You can change the default rsync excludes file here if you know what
+# you're doing. Be sure to use the full path to the file.
+#
+# It's also possible to edit the excludes file by choosing "Setup"
+# during the execution of the script.
+#
+# Default is "/usr/lib/refractasnapshot/snapshot_exclude.list"
+
+snapshot_excludes="/usr/lib/refractasnapshot/snapshot_exclude.list"
+
+
+# Change this if you want the live system to use other than the default
+# kernel and initrd. You may need to edit the isolinux boot menu to
+# match the filenames. (Also see custom boot menu section below.)
+# Example: for kernel_image="/boot/vmlinuz-3.16.0-4-amd64" then the kernel
+# line in the boot menu would contain:
+#	 kernel /live/vmlinuz-3.16.0-4-amd64
+#
+# (Defaults are /vmlinuz and /initrd.img)
+
+kernel_image="/vmlinuz"
+initrd_image="/initrd.img"
+
+
+# Multiple snapshots (iso files) are named with the date and time of
+# creation. If you prefer to have them numbered sequentially, comment
+# out the next line. Default is to keep the line uncommented.
+
+stamp="datetime"
+
+
+# The name of the snapshot file will be snapshot-{date or number}.iso.
+# If you'd like to replace "snapshot" with something more memorable,
+# change it here. (example: snapshot_basename="refracta-nox-wheezy")
+# volid is the volume label on the finished (burned) CD, DVD or USB.
+
+snapshot_basename="Loc-OS 23 KDE"
+volid="Loc-OS 23 KDE"
+
+
+# Change to "no" if you don't want the sha256sum file created with the iso.
+# (Default is "yes")
+
+make_sha256sum="yes"
+
+
+# Change to "no" if you want a plain iso image instead of isohybrid.
+# (Default is "yes")
+
+make_isohybrid="yes"
+
+
+# Uncomment one of the lines below to use xz compression for smaller iso.
+
+# small and slow
+#mksq_opt="-comp xz"
+
+# smaller and slower:
+#mksq_opt="-comp xz -Xbcj x86"
+
+####################################
+# Turn stuff on and off section
+
+# Allow users to mount all fixed drives with pmount for live iso.
+# Refractainstaller removes this upon installation.
+# (Default is "yes")
+
+pmount_fixed="yes"
+
+
+# update the mlocate database before copying filesystem.
+
+update_mlocate="yes"
+
+
+# Clear list of recently used files in geany for primary user.
+# Default is "yes"
+
+clear_geany="yes"
+
+
+# Allow password login to ssh for users (not root).
+# If ssh_pass="yes", then PasswordAuthentication will be set to "yes"
+# If ssh_pass="no", then PasswordAuthentication will be set to "no"
+# In either of the above cases, if PermitRootLogin was set to "yes",
+# it will be changed to "prohibit-password" (meaning with auth keys only)
+# If ssh_pass is null or set to anything other than "yes" or "no", then
+# /etc/ssh/sshd_config will not be altered.
+
+ssh_pass="yes"
+
+########################################################
+# Custom boot menu and help files section.
+
+# If you're running refractasnapshot on some linux distribution other
+# than Refracta, You might also want to edit or remove some of the help
+# files in the isolinux directory. (f1.txt, f2.txt...)
+# If you want those changes to persist between runs, you should create
+# a custom iso/isolinux directory, and set iso_dir (below) to point
+# to that directory.
+
+
+
+# If the primary user's name is not "user", then live-boot needs to see
+# the user's name in the boot command. In that case, the script will
+# automatically add the correct option. If you set a user name here, it
+# will override that process. Use this if you want to log into the live
+# media as someone other than the primary user (i.e. any user whose
+# uid:gid are not 1000:1000.)
+# Under most circumstances, leave this blank or commented out.
+
+#username=""
+
+
+# Change to "yes" if you want to be able to view or edit the boot menu
+# or any other config files before the final image is made.
+# Note2: For SolusOS and possibly others, boot entries should contain
+# "union=unionfs" in place of "union=aufs".
+# Note3: For anything later than jessie, union=aufs should be removed
+# or possibly replaced with union=overlay
+
+edit_boot_menu="no"
+
+
+
+# EDITOR SETTINGS
+# This gets used if you set edit_boot_menu="yes" or if you run setup
+# and choose to edit the config file or the excludes file.
+# Use an absolute path here.
+# (example: text_editor="/usr/bin/nano)"
+
+# Command-line editor (for refractasnapshot)
+text_editor="$(type -p nano)"
+
+# Graphical editor (for refractasnapshot-gui)
+# Program tests for geany, gedit, kate, kwrite, leafpad, medit, mousepad, pluma
+# You can specify an editor here if needed.
+# other_editor_option is used to force a new instance of the editor.
+
+other_editor=""
+other_editor_option=""
+
+
+
+# You can change iso_dir if you want to use customized files for the
+# boot menu and boot help pages on the live-cd.
+# Note:
+# If you're using custom versions (different from what's installed
+# on your system) of isolinux.bin and vesamenu.c32, you'll need to edit
+# or comment out the rsync commands in the script that copy these two
+# files from your system to the work directory. To find the lines, see
+# /usr/bin/refractasnapshot or /usr/bin/refractsnapshot-gui for the
+# copy_isolinux function, around line 520 or 630, respectively.
+# (Default is "/usr/lib/refractasnapshot/iso")
+# DO NOT USE A TRAILING SLASH HERE!!!"
+
+iso_dir="/usr/lib/refractasnapshot/iso"
+
+
+# Change this if you're using customized boot menu files, AND your
+# menu file is other than the default, live.cfg, AND you set
+# $edit_boot_menu to "yes".
+
+boot_menu="live.cfg"
+
+# grub_template gets used for uefi live boot menu.
+
+grub_template="/usr/lib/refractasnapshot/grub.cfg.template"
+
+
+# Uncomment this to add boot help files specific to the Refracta distribution.
+# Otherwise, generic help files, mostly empty, will be used. If you want
+# to use your own customized files, see iso_dir settings above.
+
+#refracta_boot_help="yes"
+
+
+# Prepare the initrd to support encrypted volumes. Uncomment this
+# if you plan to use the snapshot on a live usb with an encrypted
+# persistent volume. This will edit /etc/cryptsetup-initramfs/conf-hook
+# to set CRYPTSETUP=y
+
+#initrd_crypt="yes"
+
+
+# Uncomment to include your network configuration in the snapshot.
+# This will preserve your /etc/network/interfaces and any saved wireless
+# configurations. This works for NetworkManager, simple-netaid/netman
+# and wicd.
+# It will also add "ip=frommedia" to the boot command, so that the saved
+# configuration will be used.
+# Default is commented; interfaces file in $work_dir/myfs gets replaced
+# and only contains the loopback interface.
+#
+# NOTE!!! If you're using some other network manager, and you don't want
+# your configs to be copied, you need to add the appropriate files to
+# the excludes list. (Tell me what those files are, and I'll fix
+# refractasnapshot to handle it.)
+
+#netconfig_opt="ip=frommedia"
+
+
+# Uncomment to use old or new style interface names.
+# Use net.ifnames=0 to force old interface names with udev. (eth0)
+# Use net.ifnames=1 to force new interface names with eudev. (enp0s1)
+
+#ifnames_opt="net.ifnames=0"
+
+
+# Snapshot Help text
+
+snapshot_help="/usr/share/doc/refractasnapshot-base/readme.refractasnapshot.txt.gz"
+
+
+# DEPRECATED:
+# This patch is no longer needed. Instead, the script will create some
+# files in /dev to help with booting. If you leave this variable set
+# to "yes" the script will check for previous application of the patch
+# and give you the chance to edit the file manually. If you don't remove
+# the lines that were added by the patch, nothing bad will happen.
+#
+#
+# Debian Jessie systems without systemd and with util-linux-2.25 will
+# create an unbootable iso. The workaround is to add a few lines to
+# /usr/share/initramfs-tools/init and then rebuild the initrd.
+# If this option is set to "yes" then the script will check for systemd
+# and for the version of util-linux. If needed, the script will apply
+# the patch and rebuild the initrd.
+#
+# Warning: If you also need to run the nocrypt.sh script because you're
+# creating a snapshot from a system INSTALLED ON AN ENCRYPTED PARTITION,
+# you need to run nocrypt.sh after letting this patch run. (Hint: you
+# can abort the snapshot run at the Disk Space Report, run nocrypt,
+# then make your snapshot.)
+#
+# Default is "no" or commented out.
+
+patch_init_nosystemd="yes"

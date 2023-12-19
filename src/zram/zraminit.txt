@@ -1,0 +1,53 @@
+#!/usr/bin/env /lib/init/init-d-script
+
+### BEGIN INIT INFO
+# Provides:          zramswap
+# Required-Start:    $syslog $time $remote_fs
+# Required-Stop:     $syslog $time $remote_fs
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Linux zramswap setup
+# Description:       Debian init script for zramswap
+### END INIT INFO
+
+DAEMON=/usr/sbin/zramswap
+PIDFILE=none
+
+_is_active() {
+	$DAEMON status >/dev/null 2>&1
+	return $?
+}
+
+do_start_prepare() {
+	if _is_active; then
+		log_warning_msg "$NAME is already active"
+		exit 3
+	fi
+}
+
+do_start_cmd_override() {
+	$DAEMON start
+}
+
+do_stop_prepare() {
+	if ! _is_active; then
+		log_warning_msg "$NAME is not active"
+		exit 3
+	fi
+}
+
+do_stop_cmd_override() {
+	$DAEMON stop
+}
+
+do_status_override() {
+	$DAEMON status
+}
+
+do_restart_override() {
+	if _is_active; then
+		$DAEMON restart
+	else
+		$DAEMON start
+	fi
+}
