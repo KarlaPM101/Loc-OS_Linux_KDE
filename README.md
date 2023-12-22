@@ -1,5 +1,3 @@
-_TODO - Readme con detalles..._
-
 Loc-OS 23 KDE, una distribución de GNU/Linux que ofrece como base a Loc-OS 23, creada por Nicolás Longardi, en la que se le ha añadido el escritorio KDE Plasma 5.27 y realizado una serie de optimizaciones. La distribución, en las pruebas realizadas, logra arrancar con 371MiB en PCs de 32bit y 526MiB en PCs de 64bit (con UEFI).
 
 Inicialmente, en la versión de noviembre de 2023 cree la versión con KDE Plasma utilizando como base la ISO de Loc-OS 23 XFCE (build de noviembre).
