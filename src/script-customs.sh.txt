@@ -67,14 +67,13 @@ rm /tmp/welcome -R
 
 
 ##################################################
-## Limpiar
+## Elimina paquetes adicionales
 ##################################################
-#apt -y purge libssh-4 openssh-client avahi-daemon xsettingsd ofono powerdevil modemmanager
+
+apt -y purge apparmor aspell-es bup chafa cups-pk-helper debian-reference-es debian-reference-common fonts-freefont-ttf fonts-liberation git ispanish kdeconnect konqueror kpeople-vcard kup-backup kwrite manpages-es mlocate par2 partitionmanager plasma-browser-integration plasma-disks plocate python3-cairo python3-cups python3-cupshelpers python3-fuse python3-pylibacl python3-smbc python3-tornado rtkit smartmontools sshfs system-config-printer vim-tiny zutty
+
 apt autoremove
 
-##################################################
-## Crontab
-##################################################
 
 
 ##################################################
@@ -137,6 +136,35 @@ apt -y remove kdeconnect
 #chmod -x /usr/lib/x86_64-linux-gnu/libexec/kactivitymanagerd
 chmod -x /usr/bin/kglobalaccel5
 chmod -x /usr/bin/kded5
+
+##################################################
+## Desactiva plasmoides
+##################################################
+
+mkdir /usr/share/plasma/plasmoids.disabled
+mv /usr/share/plasma/plasmoids/* /usr/share/plasma/plasmoids.disabled/
+mv /usr/share/plasma/plasmoids.disabled/org.kde.desktopcontainment /usr/share/plasma/plasmoids/
+mv /usr/share/plasma/plasmoids.disabled/org.kde.kscreen /usr/share/plasma/plasmoids/
+mv /usr/share/plasma/plasmoids.disabled/org.kde.panel /usr/share/plasma/plasmoids/
+mv /usr/share/plasma/plasmoids.disabled/org.kde.plasma.volume /usr/share/plasma/plasmoids/
+mv /usr/share/plasma/plasmoids.disabled/org.kde.plasma.systemtray /usr/share/plasma/plasmoids/
+mv /usr/share/plasma/plasmoids.disabled/org.kde.plasma.windowlist /usr/share/plasma/plasmoids/
+mv /usr/share/plasma/plasmoids.disabled/org.kde.plasma.showdesktop /usr/share/plasma/plasmoids/
+mv /usr/share/plasma/plasmoids.disabled/org.kde.plasma.private.systemtray /usr/share/plasma/plasmoids/
+mv /usr/share/plasma/plasmoids.disabled/org.kde.plasma.panelspacer /usr/share/plasma/plasmoids/
+mv /usr/share/plasma/plasmoids.disabled/org.kde.plasma.notifications /usr/share/plasma/plasmoids/
+mv /usr/share/plasma/plasmoids.disabled/org.kde.plasma.lock_logout /usr/share/plasma/plasmoids/
+mv /usr/share/plasma/plasmoids.disabled/org.kde.plasma.kicker /usr/share/plasma/plasmoids/
+mv /usr/share/plasma/plasmoids.disabled/org.kde.plasma.kickoff /usr/share/plasma/plasmoids/
+mv /usr/share/plasma/plasmoids.disabled/org.kde.plasma.icontasks /usr/share/plasma/plasmoids/
+mv /usr/share/plasma/plasmoids.disabled/org.kde.plasma.icon /usr/share/plasma/plasmoids/
+mv /usr/share/plasma/plasmoids.disabled/org.kde.plasma.digitalclock /usr/share/plasma/plasmoids/
+mv /usr/share/plasma/plasmoids.disabled/org.kde.milou /usr/share/plasma/plasmoids/
+mv /usr/share/plasma/plasmoids.disabled/org.kde.plasma.appmenu /usr/share/plasma/plasmoids/
+mv /usr/share/plasma/plasmoids.disabled/org.kde.plasma.calendar /usr/share/plasma/plasmoids/
+mv /usr/share/plasma/plasmoids.disabled/org.kde.plasma.folder /usr/share/plasma/plasmoids/
+mv /usr/share/plasma/plasmoids.disabled/org.kde.plasma.marginsseparator /usr/share/plasma/plasmoids/
+mv /usr/share/plasma/plasmoids.disabled/org.kde.plasma.taskmanager /usr/share/plasma/plasmoids/
 
 ##################################################
 ## Fix Boot Errors

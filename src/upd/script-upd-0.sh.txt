@@ -1,0 +1,111 @@
+#!/usr/bin/env bash
+
+##################################################
+## Actualizar
+##
+## Key: 0
+## -- Correción de locales
+## -- Elimina paquetes no necesarios, eg. konqueror
+##    librerias python3, partitionmanager, etc.
+## -- Desactiva algunos plasmoides
+## -- Quita algunos archivos del ISO
+## -- Correción sources.list
+## -- Squashfs ahora utiliza compresión xz
+##
+##################################################
+
+##################################################
+## Corrección locales
+##################################################
+
+echo "QT_QPA_PLATFORMTHEME=gtk2" > /etc/environtment
+
+echo "
+LANG=en_US.UTF-8
+LC_ALL=en_US.UTF-8
+LC_ADDRESS=en_US.UTF-8
+LC_IDENTIFICATION=en_US.UTF-8
+LC_MEASUREMENT=en_US.UTF-8
+LC_MONETARY=en_US.UTF-8
+LC_NAME=en_US.UTF-8
+LC_NUMERIC=en_US.UTF-8
+LC_PAPER=en_US.UTF-8
+LC_TELEPHONE=en_US.UTF-8
+LC_TIME=en_US.UTF-8
+LANGUAGE=en_US.UTF-8
+" > /etc/locale.conf
+
+echo "KEYMAP=us
+" > /etc/vconsole.conf
+
+echo "America/New_York" > /etc/timezone
+
+echo 'Section "InputClass"
+        Identifier "system-keyboard"
+        MatchIsKeyboard "on"
+        Option "XkbLayout" "us"
+EndSection
+' > /etc/X11/xorg.conf.d/00-keyboard.conf
+
+echo "export LC_CTYPE=en_US.UTF-8
+export LC_ALL=en_US.UTF-8" > /home/live/.bashrc
+
+echo "export LC_CTYPE=en_US.UTF-8
+export LC_ALL=en_US.UTF-8" > /root/.bashrc
+
+echo "en_US.UTF-8 UTF-8
+C.UTF-8 UTF-8" > /etc/locale.gen
+
+locale-gen
+
+
+##################################################
+## Elimina paquetes adicionales
+##################################################
+
+apt -y purge apparmor aspell-es bup chafa cups-pk-helper debian-reference-es debian-reference-common fonts-freefont-ttf fonts-liberation git ispanish kdeconnect konqueror kpeople-vcard kup-backup kwrite manpages-es mlocate par2 partitionmanager plasma-browser-integration plasma-disks plocate python3-cairo python3-cups python3-cupshelpers python3-fuse python3-pylibacl python3-smbc python3-tornado rtkit smartmontools sshfs system-config-printer vim-tiny zutty
+apt autoremove
+
+##################################################
+## Corrección sources.list
+##################################################
+wget -O /sbin/sources-final https://staging.karlaperezyt.com/locoskde/src/apt/sources-final.txt
+wget -O /sbin/sources-media https://staging.karlaperezyt.com/locoskde/src/apt/sources-media.txt
+
+##################################################
+## xz en la ISO && Splash del Grub live
+##################################################
+wget -O /usr/lib/refractasnapshot/iso/isolinux/splash.png https://staging.karlaperezyt.com/locoskde/src/refractasnapshot/splash.png
+wget -O /usr/lib/refractasnapshot/snapshot_exclude.list https://staging.karlaperezyt.com/locoskde/src/refractasnapshot/snapshot_exclude.list.txt
+
+##################################################
+## Desactiva plasmoides
+##################################################
+
+mkdir /usr/share/plasma/plasmoids.disabled
+mv /usr/share/plasma/plasmoids/* /usr/share/plasma/plasmoids.disabled/
+mv /usr/share/plasma/plasmoids.disabled/org.kde.desktopcontainment /usr/share/plasma/plasmoids/
+mv /usr/share/plasma/plasmoids.disabled/org.kde.kscreen /usr/share/plasma/plasmoids/
+mv /usr/share/plasma/plasmoids.disabled/org.kde.panel /usr/share/plasma/plasmoids/
+mv /usr/share/plasma/plasmoids.disabled/org.kde.plasma.volume /usr/share/plasma/plasmoids/
+mv /usr/share/plasma/plasmoids.disabled/org.kde.plasma.systemtray /usr/share/plasma/plasmoids/
+mv /usr/share/plasma/plasmoids.disabled/org.kde.plasma.windowlist /usr/share/plasma/plasmoids/
+mv /usr/share/plasma/plasmoids.disabled/org.kde.plasma.showdesktop /usr/share/plasma/plasmoids/
+mv /usr/share/plasma/plasmoids.disabled/org.kde.plasma.private.systemtray /usr/share/plasma/plasmoids/
+mv /usr/share/plasma/plasmoids.disabled/org.kde.plasma.panelspacer /usr/share/plasma/plasmoids/
+mv /usr/share/plasma/plasmoids.disabled/org.kde.plasma.notifications /usr/share/plasma/plasmoids/
+mv /usr/share/plasma/plasmoids.disabled/org.kde.plasma.lock_logout /usr/share/plasma/plasmoids/
+mv /usr/share/plasma/plasmoids.disabled/org.kde.plasma.kicker /usr/share/plasma/plasmoids/
+mv /usr/share/plasma/plasmoids.disabled/org.kde.plasma.kickoff /usr/share/plasma/plasmoids/
+mv /usr/share/plasma/plasmoids.disabled/org.kde.plasma.icontasks /usr/share/plasma/plasmoids/
+mv /usr/share/plasma/plasmoids.disabled/org.kde.plasma.icon /usr/share/plasma/plasmoids/
+mv /usr/share/plasma/plasmoids.disabled/org.kde.plasma.digitalclock /usr/share/plasma/plasmoids/
+mv /usr/share/plasma/plasmoids.disabled/org.kde.milou /usr/share/plasma/plasmoids/
+mv /usr/share/plasma/plasmoids.disabled/org.kde.plasma.appmenu /usr/share/plasma/plasmoids/
+mv /usr/share/plasma/plasmoids.disabled/org.kde.plasma.calendar /usr/share/plasma/plasmoids/
+mv /usr/share/plasma/plasmoids.disabled/org.kde.plasma.folder /usr/share/plasma/plasmoids/
+mv /usr/share/plasma/plasmoids.disabled/org.kde.plasma.marginsseparator /usr/share/plasma/plasmoids/
+mv /usr/share/plasma/plasmoids.disabled/org.kde.plasma.taskmanager /usr/share/plasma/plasmoids/
+
+
+reboot

@@ -135,7 +135,8 @@ make_isohybrid="yes"
 #mksq_opt="-comp xz"
 
 # smaller and slower:
-#mksq_opt="-comp xz -Xbcj x86"
+#
+mksq_opt="-comp xz -Xbcj x86"
 
 ####################################
 # Turn stuff on and off section
